@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <title>kamenTRPG</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <div class="page-title">答え合わせ</div>
+        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div id="roleList"></div>
+        <div>みんなの回答</div>
+        <div id="resultArea"></div>
+        <button id="nextGame">次のゲームへ</button>
+        <button id="linkTop">TOPに戻る</button>
+    </body>
+    <script type="text/javascript">
+        var players = JSON.parse(localStorage.getItem("players"));
+        console.log('ローカルストレージ', players);
+        $.each(players, function(i, data) {
+            var html = '<div><span>' + data.name + 'さんの役職は</span><span class="roleText">' + data.role + '</span><span>でした！</span></div>';
+            // roleListに描画
+            $('#roleList').append(html);
+
+            var html2 = '';
+            html2 += '<div>' + data.name + 'さんへの回答</div><div>（答え：' + data.role + '）</div>';
+            $.each(data.answer, function(j, answer) {
+                html2 += '<div>' + answer.name + ':' + answer.role + '</div>';
+            });
+            // roleListに描画
+            $('#resultArea').append(html2);
+        });
+
+        // ローカルストレージリセット処理
+        var dataReset = function() {
+            var newData = [];
+            $.each(players, function(i, data) {
+                var obj = {
+                    name: data.name,
+                    role: '',
+                    answer: []
+                }
+                newData.push(obj);
+            });
+
+            // ローカルストレージにセット
+            localStorage.setItem("players", JSON.stringify(newData));
+        };
+
+        dataReset();
+        
+        // 次のゲームへボタンクリックイベント
+        $('#nextGame').click(function() {
+            // 画面遷移
+            window.location.href = "./setting.html";
+        });
+
+        // TOPへ戻るボタンクリックイベント
+        $('#linkTop').click(function() {
+            // 画面遷移
+            window.location.href = "./index.html";
+        });
+    </script>
+</html>
+
+

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <title>kamenTRPG</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <div class="page-title">回答</div>
+        <div>みんなの役職はなんだったかな？回答してみよう！</div>
+        <div id="answerArea">
+            <div id="playerName">さんが回答してください</div>
+            <div id="inputBox"></div>
+            <button id="next">回答決定！次の回答者へ</button>
+            <button id="linkResult" style="display: none;">回答決定！</button>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var players = JSON.parse(localStorage.getItem("players"));
+        console.log('ローカルストレージ', players);
+        var count = 0; // カウント
+        var playerLength = players.length;
+
+        // テキストエリア描画メソッド
+        var inputRender = function() {
+            // 要素リセット
+            $('.ansewerBox').remove();
+
+            $('#playerName').text(players[count].name + 'さんが回答してください');
+            $.each(players, function(i, data) {
+                if (i == count) {
+                    // 回答中のプレイヤーは処理をスキップ
+                    return true;
+                }
+                var pcNo = i + 1 // プレイヤー番号
+            
+                var html = '';
+                html += '<div class="ansewerBox">';
+                html += '    <div>' + data.name + 'さんの役職は</div>';
+                html += '    <input type="textArea" data-pc-no="' + pcNo + '" class="input-role" placeholder="わからない役職" />';
+                html += '    <div>だと思う</div>';
+                html += '</div>';
+                
+                $('#inputBox').append(html);
+            });
+        };
+
+        // 初回描画
+        inputRender();
+
+        // 次の回答者へボタンクリックイベント
+        $('#next').click(function(e) {
+            // 回答した役職をjsonにセット
+            var answer = [];
+            $('.input-role').each(function(i, el) {
+                var num = Number($(el).data('pcNo')) - 1; // 何番目のプレイヤーか
+                var role = $(el).val(); // 役職
+                if (role == '') {
+                    role = 'わからない役職';
+                }
+                var obj = {
+                    name: players[count].name,
+                    role: role
+                }
+                players[num].answer.push(obj);
+            });
+
+            // カウントアップ
+            count++;
+
+            if (count != playerLength) {
+                // 最後以外のプレイヤーの場合は再描画
+                inputRender();
+            } else {
+                // 最後のプレイヤーの時、画面遷移ボタンを表示
+                $('#next').hide();
+                $('#linkResult').show();
+            }
+        });
+
+        // 答え合わせ画面遷移ボタンクリックイベント
+        $('#linkResult').click(function() {
+            // ローカルストレージにセット
+            localStorage.setItem("players", JSON.stringify(players));
+
+            // 画面遷移
+            window.location.href = "./result.html";
+        });
+    </script>
+</html>
+
+

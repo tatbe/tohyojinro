@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <title>kamenTRPG</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../js/roles.js"></script>
+    </head>
+    <body>
+        <div class="page-title">プレイヤーの人数と名前を設定しよう</div>
+        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div id="selectArea">役職のテーマ<select name="theme"></select></div>
+        <div id="inputArea">
+                <div class="input-row">
+                    <span class="noText">1</span><input type="textArea" data-pc-no="1" class="input-name" />
+                    <button class="upRow">▲</button>
+                    <button class="downRow">▼</button>
+                    <button class="removePc">－</button>
+                </div>
+                <div class="input-row">
+                    <span class="noText">2</span><input type="textArea" data-pc-no="2" class="input-name" />
+                    <button class="upRow">▲</button>
+                    <button class="downRow">▼</button>
+                    <button class="removePc">－</button>
+                </div>
+                <div class="input-row">
+                    <span class="noText">3</span><input type="textArea" data-pc-no="3" class="input-name" />
+                    <button class="upRow">▲</button>
+                    <button class="downRow">▼</button>
+                    <button class="removePc">－</button>
+                </div>
+        </div>
+        <div>
+            <button id="addPc">＋プレイヤー追加</button>
+            <button id="gameStart" style="font-size: 30px">ゲームスタート</button>
+            <a href="./index.html">TOPへ</a>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var updateNo = function() {
+            $('.input-row').each(function(i, data) {
+                var num = i + 1; // 番号
+
+                // 番号をテキストに設定
+                $(data).children('.noText').text(num);
+                // データ属性に番号を設定
+                $(data).children('input').attr('data-pc-no', num);
+            });
+        }
+
+        // セレクトボックス生成
+        var optionHtml = '';
+        // $.each(roles, function(i, data) {
+        //     optionHtml += '<option value="' + data.theme + '">' + data.name + '</option>';
+        // });
+        for (var prop in roles) {
+            optionHtml += '<option value="' + prop + '">' + roles[prop].name + '</option>';
+        }
+        $('select').html(optionHtml);
+
+        // ローカルストレージにデータが存在する場合
+        var oldData = JSON.parse(localStorage.getItem("players"));
+        console.log('ローカルストレージ', oldData);
+        var initHtml = '';
+        if (oldData) {
+            // 初期化
+            $('.input-row').remove();
+            
+            $.each(oldData, function(i, data) {
+                var no = i + 1
+                initHtml += '<div class="input-row">';
+                initHtml += '    <span class="noText">' + no + '</span><input type="textArea" data-pc-no="' + no + '" class="input-name" value="' + data.name + '" />';
+                initHtml += '    <button class="upRow">▲</button>';
+                initHtml += '    <button class="downRow">▼</button>';
+                initHtml += '    <button class="removePc">－</button>';
+                initHtml += '</div>';
+            });
+
+            // 描画
+            $('#inputArea').append(initHtml);
+        }
+
+        // プレイヤー追加クリックイベント
+        $('#addPc').click(function(e) {
+            var html = '' // 追加するhtml
+            var max = 999 // 追加上限数
+
+
+            // html生成
+            html += '<div class="input-row">';
+            html += '    <span class="noText"></span><input type="textArea" data-pc-no="" class="input-name" />';
+            html += '    <button class="upRow">▲</button>';
+            html += '    <button class="downRow">▼</button>';
+            html += '    <button class="removePc">－</button>';
+            html += '</div>';
+
+            // html追加
+            $('#inputArea').append(html);
+
+            // プレイヤー番号更新
+            updateNo();
+        });
+
+        // ゲームスタートクリックイベント
+        $('#gameStart').click(function() {
+            var players = []; // プレイヤー全員の情報
+            var inputErrorFlag = false; // 入力不備がある場合はtrue
+            var theme = $('select').val(); // 役職のテーマを取得
+
+            // プレイヤー情報代入
+            $('.input-name').each(function(i, data) {
+                var no = i + 1; // 番号
+                var name = $(data).val(); // 名前
+                // 名前が入力されていないテキストエリアがある場合は処理終了
+                if (!name) {
+                    //inputErrorFlag = true;
+                    //alert('名前が入力されていないプレイヤーがいるとゲームをはじめられないよ！');
+                    //return false;
+                    name = 'プレイヤー' + no;
+                }
+
+                var ransu = Math.floor(Math.random() * roles[theme].list.length); // 乱数
+
+                // プレイヤー情報追加
+                players.push({
+                    no: no,
+                    name: name,
+                    role: roles[theme].list[ransu],
+                    answer: []
+                });
+            });
+
+            // 入力不備があった場合、処理終了
+            if (inputErrorFlag) {
+                return;
+            }
+
+            // ローカルストレージにセット
+            localStorage.setItem("players", JSON.stringify(players));
+
+            // 画面遷移
+            window.location.href = "./kakunin.html";
+        });
+
+        // 各列のクリックイベント
+        $('#inputArea').click(function(e) {
+            var className = $(e.target).attr('class');
+            switch (className) {
+                case 'removePc':
+                    var count = 0 // 追加前のプレイヤー数
+
+                    // プレイヤー数取得
+                    count = $('.input-name').length;
+
+                    // プレイヤー数が2名以下だった場合、処理しない
+                    if (count <= 2) {
+                        return;
+                    }
+
+                    var el = $(e.target); // 対象のボタン
+                    var inputRowEl = el.parent(); // ボタンの親要素
+
+                    // 対象の列削除
+                    $(inputRowEl).remove();
+
+                    // プレイヤー番号更新
+                    updateNo();
+                    
+                    break;
+            
+                case 'upRow':
+                    var el = $(e.target); // 対象のボタン
+                    var inputRowEl = el.parent(); // ボタンの親要素
+                    var nameEl = el.prev('input'); // 対象のプレイヤー名テキストエリア
+                    var targetRowEl = $(inputRowEl).prev('.input-row'); // ひとつ上の列
+                    // ひとつ上の列が存在しない場合、処理終了
+                    if(targetRowEl.length == 0) {
+                        return;
+                    }
+                    var targetNameEl = $(targetRowEl).children('input'); // ひとつ上のテキストエリア
+                    
+
+                    // プレイヤー名を交換
+                    var text = $(nameEl).val();
+                    var targetText = $(targetNameEl).val();
+                    $(nameEl).val(targetText);
+                    $(targetNameEl).val(text);
+
+                    break;
+
+                case 'downRow':
+                    var el = $(e.target); // 対象のボタン
+                    var inputRowEl = el.parent(); // ボタンの親要素
+                    var nameEl = el.prev().prev('input'); // 対象のプレイヤー名テキストエリア
+                    var targetRowEl = $(inputRowEl).next('.input-row'); // ひとつ下の列
+                    // ひとつ下の列が存在しない場合、処理終了
+                    if(targetRowEl.length == 0) {
+                        return;
+                    }
+                    var targetNameEl = $(targetRowEl).children('input'); // ひとつ下のテキストエリア
+                    
+
+                    // プレイヤー名を交換
+                    var text = $(nameEl).val();
+                    var targetText = $(targetNameEl).val();
+                    $(nameEl).val(targetText);
+                    $(targetNameEl).val(text);
+                    break;
+            }
+        });
+
+
+    </script>
+</html>
+
+

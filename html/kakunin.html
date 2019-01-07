@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <title>kamenTRPG</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <div class="page-title">確認</div>
+        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div id="kakuninBox"></div>
+    </body>
+    <script type="text/javascript">
+        var players = JSON.parse(localStorage.getItem("players"));
+        console.log('ローカルストレージ', players);
+        var count = 0; // カウント
+        var playerLength = players.length;
+
+        // 処理の流れ
+        /*
+        ⓵プレイヤー１さんがこの画面をみてください。役職を表示します。他のプレイヤーに見られないように表示してください。
+        ⓶お題を表示します。よろしいですか？
+        ⓷役職「○○○」　覚えたボタン押下で⓵に戻る
+        */
+
+        var showWindow1 = function() {
+            var kakuninBox = $('#kakuninBox'); // 描画エリア
+            var html = ''; // 描画するHTML
+
+            html += '<div id="kakuninWindow1">';
+            html += '   <div id="playerNameText">';
+            html += '       ' + players[count].name + 'さんがこの画面をみてください。';
+            html += '   </div>';
+            html += '   <div id="kakuninText">';
+            html += '       役職を表示します。他のプレイヤーに見られないように表示してください。';
+            html += '   </div>';
+            html += '   <div id="kakuninLastText" style="display: none;">';
+            html += '       お題を表示します。よろしいですか？';
+            html += '   </div>';
+            html += '   <div id="kakuninBtnArea">';
+            html += '       <button id="nextWindow">表示</button>';
+            html += '   </div>';
+            html += '   <div id="kakuninLastBtnArea" style="display: none;">';
+            html += '       <button id="cancel">キャンセル</button>';
+            html += '       <button id="ok">OK</button>';
+            html += '   </div>';
+            html += '</div>';
+            html += '<div id="kakuninWindow2" style="display: none;">';
+            html += '    <div id="playerRoleText">';
+            html += '       あなたの役職は「' + players[count].role + '」です！';
+            html += '    </div>';
+            html += '    <div>＠＠＠＠＠＠＠＠＠＠＠＠＠</div>';
+            html += '    <button id="remember">覚えた！</button>';
+            html += '</div>';
+            
+            $(kakuninBox).html(html);
+
+            // 表示ボタンクリックイベント
+            $('#nextWindow').click(function() {
+                $('#kakuninText').hide();
+                $('#kakuninLastText').show();
+                $('#kakuninBtnArea').hide();
+                $('#kakuninLastBtnArea').show();
+            });
+
+            // キャンセルボタンクリックイベント
+            $('#cancel').click(function() {
+                $('#kakuninText').show();
+                $('#kakuninLastText').hide();
+                $('#kakuninBtnArea').show();
+                $('#kakuninLastBtnArea').hide();
+            });
+
+            // OKボタンクリックイベント
+            $('#ok').click(function() {
+                $('#kakuninWindow1').hide();
+                $('#kakuninWindow2').show();
+            });
+
+            // 覚えた！ボタンクリックイベント
+            $('#remember').click(function() {
+                count++; // カウントアップ
+
+                // 最後のプレイヤーの場合
+                if (count == playerLength) {
+                    // 画面遷移
+                    window.location.href = "./play.html";
+                    return;
+                }
+
+                $('#playerNameText').text(players[count].name + 'さんがこの画面をみてください。');
+                $('#playerRoleText').text('あなたの役職は「' + players[count].role + '」です！');
+
+                $('#kakuninWindow2').hide();
+                $('#kakuninText').show();
+                $('#kakuninLastText').hide();
+                $('#kakuninBtnArea').show();
+                $('#kakuninLastBtnArea').hide();
+                $('#kakuninWindow1').show();
+            });
+        }
+        showWindow1();
+
+    </script>
+</html>
+
+
