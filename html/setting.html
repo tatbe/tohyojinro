@@ -9,7 +9,13 @@
     <body>
         <div class="page-title">プレイヤーの人数と名前を設定しよう</div>
         <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
-        <div id="selectArea">役職のテーマ<select name="theme"></select></div>
+        <div id="selectArea">
+            役職のテーマ<select name="turn">
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                </select>
+        </div>
         <div id="inputArea">
                 <div class="input-row">
                     <span class="noText">1</span><input type="textArea" data-pc-no="1" class="input-name" />
@@ -53,10 +59,10 @@
         // $.each(roles, function(i, data) {
         //     optionHtml += '<option value="' + data.theme + '">' + data.name + '</option>';
         // });
-        for (var prop in roles) {
-            optionHtml += '<option value="' + prop + '">' + roles[prop].name + '</option>';
-        }
-        $('select').html(optionHtml);
+        // for (var prop in roles) {
+        //     optionHtml += '<option value="' + prop + '">' + roles[prop].name + '</option>';
+        // }
+        // $('select').html(optionHtml);
 
         // ローカルストレージにデータが存在する場合
         var oldData = JSON.parse(localStorage.getItem("players"));
@@ -105,7 +111,11 @@
         $('#gameStart').click(function() {
             var players = []; // プレイヤー全員の情報
             var inputErrorFlag = false; // 入力不備がある場合はtrue
-            var theme = $('select').val(); // 役職のテーマを取得
+            //【kamen】var theme = $('select').val(); // 役職のテーマを取得
+            var turn = $('select').val(); // ターン数
+            var ransuJinro = Math.floor(Math.random() * $('.input-name').length); // 人狼決定用乱数
+            var ransuPattern = Math.floor(Math.random() * 4); // 人狼決定用乱数
+            var pattern = ['4×0×0×0', '3×1×0×0', '2×2×0×0', '1×1×1×1']
 
             // プレイヤー情報代入
             $('.input-name').each(function(i, data) {
@@ -119,13 +129,17 @@
                     name = 'プレイヤー' + no;
                 }
 
-                var ransu = Math.floor(Math.random() * roles[theme].list.length); // 乱数
+                //【kamen】var ransu = Math.floor(Math.random() * roles[theme].list.length); // 乱数
+                var role = '村人';
+                if (i == ransuJinro) {
+                    role = '人狼';
+                }
 
                 // プレイヤー情報追加
                 players.push({
                     no: no,
                     name: name,
-                    role: roles[theme].list[ransu],
+                    role: role,
                     answer: []
                 });
             });
@@ -137,6 +151,9 @@
 
             // ローカルストレージにセット
             localStorage.setItem("players", JSON.stringify(players));
+            localStorage.setItem("turn", turn);
+            localStorage.setItem("pattern", pattern[ransuPattern]);
+
 
             // 画面遷移
             window.location.href = "./kakunin.html";

@@ -9,94 +9,31 @@
     <body>
         <div class="page-title">セッション</div>
         <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div id="pattern"></div>>
         <div id="startBtnArea">
             <button id="start">セッションスタート！</button>
         </div>
         <div id="playArea" style="display: none;">
-            <div id="scene_1">
-                <span class="scene-text"></span>
-                <button id="btn_1">解決！</button>
-            </div>
-            <div id="scene_2" style="display: none;">
-                <span class="scene-text"></span>
-                <button id="btn_2">解決！</button>
-            </div>
-            <div id="scene_3" style="display: none;">
-                <span class="scene-text"></span>
-                <button id="btn_3">解決！</button>
-            </div>
-            <div id="scene_4" style="display: none;">
-                <span class="scene-text"></span>
-                <button id="btn_4">解決！</button>
-            </div>
+            あああああああああああああ
         </div>
-        <div id="endBtnArea" style="display: none;">
-            <button id="linkAnswer">セッション終了！回答画面へ</button>
-            <button id="linkResult">セッション終了！回答はめんどくさいから答え合わせへ</button>
+        <div id="endBtnArea">
+            <button id="linkAnswer">セッション終了！投票画面へ</button>
         </div>
     
     </body>
     <script type="text/javascript">
-        // 初期化
-        var sceneType = 'normal'; // TODO シーンタイプを選択できるようにする？
-        var sceneObj = sceneJson[sceneType][Math.floor(Math.random() * sceneJson[sceneType].length)];
-
-        // シーン1決定
-        var sceneText1 = sceneObj.firstScene;
-        // シーン2決定
-        var sceneText2 = sceneObj.otherScene[Math.floor(Math.random() * sceneObj.otherScene.length)];
-        // シーン3決定
-        var sceneText3 = sceneObj.otherScene[Math.floor(Math.random() * sceneObj.otherScene.length)];
-        // シーン4決定
-        var sceneText4 = sceneObj.endScene[Math.floor(Math.random() * sceneObj.endScene.length)];
-
-        // 描画
-        $('#scene_1 .scene-text').text(sceneText1);
-        $('#scene_2 .scene-text').text(sceneText2);
-        $('#scene_3 .scene-text').text(sceneText3);
-        $('#scene_4 .scene-text').text(sceneText4);
-
-
+        var pattern = localStorage.getItem('pattern');
+        $('#pattern').append('指定投票パターン：' + pattern);
         // セッションスタートボタンクリックイベント
         $('#start').click(function() {
             $('#playArea').show();
             $('#startBtnArea').hide();
         });
 
-        // シーン１解決ボタンクリックイベント
-        $('#btn_1').click(function() {
-            $('#scene_2').show();
-            $(this).attr('disabled', 'disabled');
-        });
-
-        // シーン２解決ボタンクリックイベント
-        $('#btn_2').click(function() {
-            $('#scene_3').show();
-            $(this).attr('disabled', 'disabled');
-        });
-
-        // シーン３解決ボタンクリックイベント
-        $('#btn_3').click(function() {
-            $('#scene_4').show();
-            $(this).attr('disabled', 'disabled');
-        });
-
-        // シーン４解決ボタンクリックイベント
-        $('#btn_4').click(function() {
-            $('#endBtnArea').show();
-            $(this).attr('disabled', 'disabled');
-        });
-
         // 回答画面遷移ボタンクリックイベント
         $('#linkAnswer').click(function() {
             // 画面遷移
             window.location.href = "./answer.html";
-        });
-
-        // 答え合わせ画面遷移ボタンクリックイベント
-        $('#linkResult').click(function() {
-            // 画面遷移
-            window.location.href = "./result.html";
         });
     </script>
 </html>

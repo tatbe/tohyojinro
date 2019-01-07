@@ -28,17 +28,12 @@
 
             $('#playerName').text(players[count].name + 'さんが回答してください');
             $.each(players, function(i, data) {
-                if (i == count) {
-                    // 回答中のプレイヤーは処理をスキップ
-                    return true;
-                }
                 var pcNo = i + 1 // プレイヤー番号
             
                 var html = '';
                 html += '<div class="ansewerBox">';
-                html += '    <div>' + data.name + 'さんの役職は</div>';
-                html += '    <input type="textArea" data-pc-no="' + pcNo + '" class="input-role" placeholder="わからない役職" />';
-                html += '    <div>だと思う</div>';
+                html += '    <div><input type="radio" class="input-role" name="input-role" data-pc-no="' + pcNo + '">' + data.name + 'さん</div>';
+                // html += '    <input type="textArea" data-pc-no="' + pcNo + '" class="input-role" placeholder="わからない役職" />';
                 html += '</div>';
                 
                 $('#inputBox').append(html);
@@ -54,14 +49,15 @@
             var answer = [];
             $('.input-role').each(function(i, el) {
                 var num = Number($(el).data('pcNo')) - 1; // 何番目のプレイヤーか
-                var role = $(el).val(); // 役職
-                if (role == '') {
-                    role = 'わからない役職';
-                }
+                // var role = $(el).val(); // 役職
+                // if (role == '') {
+                //     role = 'わからない役職';
+                // }
                 var obj = {
                     name: players[count].name,
-                    role: role
+                    role: $(el).prop('checked')
                 }
+                
                 players[num].answer.push(obj);
             });
 

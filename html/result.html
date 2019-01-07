@@ -8,28 +8,71 @@
     <body>
         <div class="page-title">答え合わせ</div>
         <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
-        <div id="roleList"></div>
+        <div id="winningOrLosing"></div>
         <div>みんなの回答</div>
         <div id="resultArea"></div>
         <button id="nextGame">次のゲームへ</button>
         <button id="linkTop">TOPに戻る</button>
     </body>
     <script type="text/javascript">
-        var players = JSON.parse(localStorage.getItem("players"));
+        var players = JSON.parse(localStorage.getItem('players'));
+        var turn = localStorage.getItem('turn');
+        var pattern = localStorage.getItem('pattern');
         console.log('ローカルストレージ', players);
-        $.each(players, function(i, data) {
-            var html = '<div><span>' + data.name + 'さんの役職は</span><span class="roleText">' + data.role + '</span><span>でした！</span></div>';
-            // roleListに描画
-            $('#roleList').append(html);
+        // $.each(players, function(i, data) {
+        //     var html = '<div><span>' + data.name + 'さんの役職は</span><span class="roleText">' + data.role + '</span><span>でした！</span></div>';
+        //     // roleListに描画
+        //     $('#roleList').append(html);
 
-            var html2 = '';
-            html2 += '<div>' + data.name + 'さんへの回答</div><div>（答え：' + data.role + '）</div>';
+        //     var html2 = '';
+        //     html2 += '<div>' + data.name + 'さんへの回答</div><div>（答え：' + data.role + '）</div>';
+        //     $.each(data.answer, function(j, answer) {
+        //         html2 += '<div>' + answer.name + ':' + answer.role + '</div>';
+        //     });
+        //     // roleListに描画
+        //     $('#resultArea').append(html2);
+        // });
+        var resultArr = [];
+        $.each(players, function(i, data) {
+            var count = 0;
             $.each(data.answer, function(j, answer) {
-                html2 += '<div>' + answer.name + ':' + answer.role + '</div>';
+                if (answer.role == true) {
+                    count++;
+                }
             });
-            // roleListに描画
-            $('#resultArea').append(html2);
+            resultArr.push(count);
+            var html = '<div>' + data.name + 'さん　' + count + '票</div>';
+            $('#resultArea').append(html);
         });
+        // 投票結果文字列生成
+        var resultPattern = '';
+        (function () {
+            resultArr.sort(function(a,b){
+                if( a > b ) return -1;
+                if( a < b ) return 1;
+                return 0;
+            });
+            
+            for(var i = 0; resultArr.length > i; i++) {
+                resultPattern += resultArr[i];
+                if (i != resultArr.length - 1) {
+                    resultPattern += '×';
+                }
+            }
+        }());
+        // 指定投票パターンと照合結果描画
+        var resultMatch = false;
+        var resultMatchText = '不正解';
+        if (resultPattern == pattern) { // 指定投票パターン照合
+            resultMatch = true;
+            resultMatchText = '正解';
+        }
+        var html2 = '';
+        html2 += '<div>' + resultMatchText + '</div>'
+        html2 += '<div>結果：' + resultPattern + '</div>';
+        html2 += '<div>指定投票パターン：' + pattern + '</div>';
+        $('#winningOrLosing').append(html2);
+
 
         // ローカルストレージリセット処理
         var dataReset = function() {
@@ -47,7 +90,7 @@
             localStorage.setItem("players", JSON.stringify(newData));
         };
 
-        dataReset();
+        // 【一時的】dataReset();
         
         // 次のゲームへボタンクリックイベント
         $('#nextGame').click(function() {
