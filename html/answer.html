@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>tohyoJinro</title>
+        <link rel="stylesheet" type="text/css" href="../css/styles.css">
         <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
     </head>
     <body>
@@ -12,6 +13,7 @@
                 <div id="playerName">さんが投票してください</div>
                 <div id="inputBox"></div>
             </div>
+            <br>
             <button id="next">投票決定！次の投票者へ</button>
             <button id="linkResult" style="display: none;">投票決定！</button>
         </div>
@@ -29,7 +31,7 @@
             // 要素リセット
             $('.ansewerBox').remove();
 
-            $('#playerName').text(players[count].name + 'さんが回答してください');
+            $('#playerName').text(players[count].name + 'さんが投票してください');
             $.each(players, function(i, data) {
                 var pcNo = i + 1 // プレイヤー番号
             
@@ -46,9 +48,9 @@
         // 初回描画
         inputRender();
 
-        // 次の回答者へボタンクリックイベント
+        // 次の投票者へボタンクリックイベント
         $('#next').click(function(e) {
-            // 回答した役職をjsonにセット
+            // 投票した役職をjsonにセット
             var answer = [];
             $('.input-role').each(function(i, el) {
                 var num = Number($(el).data('pcNo')) - 1; // 何番目のプレイヤーか
