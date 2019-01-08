@@ -2,13 +2,12 @@
 <html lang="jp">
     <head>
         <meta charset="utf-8">
-        <title>kamenTRPG</title>
+        <title>tohyoJinro</title>
         <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="../js/roles.js"></script>
     </head>
     <body>
-        <div class="page-title">プレイヤーの人数と名前を設定しよう</div>
-        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div class="page-title">■プレイヤーの人数と名前を設定しよう</div>
         <div id="selectArea">
             役職のテーマ<select name="turn">
                     <option value="3">3</option>
@@ -37,8 +36,8 @@
                 </div>
         </div>
         <div>
-            <button id="addPc">＋プレイヤー追加</button>
-            <button id="gameStart" style="font-size: 30px">ゲームスタート</button>
+            <button id="addPc">＋プレイヤー追加</button><br><br>
+            <button id="gameStart">ゲームスタート</button><br><br>
             <a href="./index.html">TOPへ</a>
         </div>
     </body>
@@ -114,8 +113,8 @@
             //【kamen】var theme = $('select').val(); // 役職のテーマを取得
             var turn = $('select').val(); // ターン数
             var ransuJinro = Math.floor(Math.random() * $('.input-name').length); // 人狼決定用乱数
-            var ransuPattern = Math.floor(Math.random() * 4); // 人狼決定用乱数
-            var pattern = ['4×0×0×0', '3×1×0×0', '2×2×0×0', '1×1×1×1']
+            var pattern = ['4×0×0×0', '3×1×0×0', '2×2×0×0', '2×1×1×0'];
+            var ransuPattern = Math.floor(Math.random() * pattern.length); // パターン決定用乱数
 
             // プレイヤー情報代入
             $('.input-name').each(function(i, data) {
@@ -151,8 +150,12 @@
 
             // ローカルストレージにセット
             localStorage.setItem("players", JSON.stringify(players));
+            localStorage.setItem("game", JSON.stringify({
+                judge: -1,
+            }));
             localStorage.setItem("turn", turn);
             localStorage.setItem("pattern", pattern[ransuPattern]);
+            
 
 
             // 画面遷移

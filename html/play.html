@@ -2,23 +2,26 @@
 <html lang="jp">
     <head>
         <meta charset="utf-8">
-        <title>kamenTRPG</title>
+        <title>tohyoJinro</title>
         <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="../js/scene.js"></script>
     </head>
     <body>
-        <div class="page-title">セッション</div>
-        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
-        <div id="pattern"></div>>
+        <div class="page-title">■セッション</div>
+        <div id="pattern"></div>
         <div id="startBtnArea">
             <button id="start">セッションスタート！</button>
         </div>
-        <div id="playArea" style="display: none;">
-            あああああああああああああ
+        <div id="session" style="display: none;">
+            <div id="playArea">
+                投票開始まであと<span id="time">180</span>秒
+            </div>
+            <div id="endBtnArea">
+                <button id="linkAnswer">セッション終了！投票画面へ</button><br>
+                <button id="linkJudge">人狼を指名して処刑する</button>
+            </div>
         </div>
-        <div id="endBtnArea">
-            <button id="linkAnswer">セッション終了！投票画面へ</button>
-        </div>
+
     
     </body>
     <script type="text/javascript">
@@ -26,14 +29,33 @@
         $('#pattern').append('指定投票パターン：' + pattern);
         // セッションスタートボタンクリックイベント
         $('#start').click(function() {
-            $('#playArea').show();
+            $('#session').show();
             $('#startBtnArea').hide();
+            setInterval(() => {
+                countDown()
+            }, 1000);
         });
+
+        function countDown() {
+            var sec = Number($('#time').text());
+            if (sec < 1) {
+                sec = 0
+            } else {
+                sec--;
+            }
+            
+            $('#time').text(sec);
+        }
 
         // 回答画面遷移ボタンクリックイベント
         $('#linkAnswer').click(function() {
             // 画面遷移
             window.location.href = "./answer.html";
+        });
+        // 処刑画面遷移ボタンクリックイベント
+        $('#linkJudge').click(function() {
+            // 画面遷移
+            window.location.href = "./judge.html";
         });
     </script>
 </html>

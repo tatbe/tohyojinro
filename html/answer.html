@@ -2,21 +2,24 @@
 <html lang="jp">
     <head>
         <meta charset="utf-8">
-        <title>kamenTRPG</title>
+        <title>tohyoJinro</title>
         <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <div class="page-title">回答</div>
-        <div>みんなの役職はなんだったかな？回答してみよう！</div>
+        <div class="page-title">■投票</div>
         <div id="answerArea">
-            <div id="playerName">さんが回答してください</div>
-            <div id="inputBox"></div>
-            <button id="next">回答決定！次の回答者へ</button>
-            <button id="linkResult" style="display: none;">回答決定！</button>
+            <div id="answerBox">
+                <div id="playerName">さんが投票してください</div>
+                <div id="inputBox"></div>
+            </div>
+            <button id="next">投票決定！次の投票者へ</button>
+            <button id="linkResult" style="display: none;">投票決定！</button>
         </div>
     </body>
     <script type="text/javascript">
         var players = JSON.parse(localStorage.getItem("players"));
+        var turn = Number(localStorage.getItem('turn'));// 数値に変換
+        
         console.log('ローカルストレージ', players);
         var count = 0; // カウント
         var playerLength = players.length;
@@ -54,6 +57,7 @@
                 //     role = 'わからない役職';
                 // }
                 var obj = {
+                    turn: turn,
                     name: players[count].name,
                     role: $(el).prop('checked')
                 }
@@ -70,6 +74,7 @@
             } else {
                 // 最後のプレイヤーの時、画面遷移ボタンを表示
                 $('#next').hide();
+                $('#answerBox').hide();
                 $('#linkResult').show();
             }
         });

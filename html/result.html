@@ -2,41 +2,39 @@
 <html lang="jp">
     <head>
         <meta charset="utf-8">
-        <title>kamenTRPG</title>
+        <title>tohyoJinro</title>
         <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
     </head>
     <body>
-        <div class="page-title">答え合わせ</div>
-        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div class="page-title">■結果</div>
         <div id="winningOrLosing"></div>
-        <div>みんなの回答</div>
+        <div id="roleList" style="display: none;"></div>
+        <div>今回の投票結果</div>
         <div id="resultArea"></div>
-        <button id="nextGame">次のゲームへ</button>
-        <button id="linkTop">TOPに戻る</button>
+        <div id="nextTurnLinkArea" style="display: none;">
+            <button id="nextTurn"></button>
+        </div>
+        <div id="nextGameLinkArea" style="display: none;">
+            <button id="nextGame">次のゲームへ</button>
+            <button id="linkTop">TOPに戻る</button>
+        <div>
     </body>
     <script type="text/javascript">
         var players = JSON.parse(localStorage.getItem('players'));
         var turn = localStorage.getItem('turn');
+        // ターン数を減算
+        var newTurn = Number(turn);
+        newTurn--;
+        // ローカルストレージにセット
+        localStorage.setItem("turn", newTurn);
         var pattern = localStorage.getItem('pattern');
         console.log('ローカルストレージ', players);
-        // $.each(players, function(i, data) {
-        //     var html = '<div><span>' + data.name + 'さんの役職は</span><span class="roleText">' + data.role + '</span><span>でした！</span></div>';
-        //     // roleListに描画
-        //     $('#roleList').append(html);
 
-        //     var html2 = '';
-        //     html2 += '<div>' + data.name + 'さんへの回答</div><div>（答え：' + data.role + '）</div>';
-        //     $.each(data.answer, function(j, answer) {
-        //         html2 += '<div>' + answer.name + ':' + answer.role + '</div>';
-        //     });
-        //     // roleListに描画
-        //     $('#resultArea').append(html2);
-        // });
         var resultArr = [];
         $.each(players, function(i, data) {
             var count = 0;
             $.each(data.answer, function(j, answer) {
-                if (answer.role == true) {
+                if (answer.role == true && answer.turn == turn) {
                     count++;
                 }
             });
@@ -62,10 +60,28 @@
         }());
         // 指定投票パターンと照合結果描画
         var resultMatch = false;
-        var resultMatchText = '不正解';
+        var resultMatchText = '';
         if (resultPattern == pattern) { // 指定投票パターン照合
             resultMatch = true;
-            resultMatchText = '正解';
+        }
+        // 勝敗結果判定
+        if (resultMatch) {
+            resultMatchText = '正解！ 村人チーム勝利！';
+            $('#nextTurnLinkArea').hide();
+            $('#nextGameLinkArea').show();
+            cleateRoleList();
+            $('#roleList').show();
+        } else if (!resultMatch && newTurn < 1) {
+            resultMatchText = '不正解 人狼チーム勝利';
+            $('#nextTurnLinkArea').hide();
+            $('#nextGameLinkArea').show();
+            cleateRoleList();
+            $('#roleList').show();
+        } else {
+            resultMatchText = '不正解...';
+            $('#nextTurn').text('次のセッションへ（あと' + newTurn + '回）');
+            $('#nextTurnLinkArea').show();
+            $('#nextGameLinkArea').hide();
         }
         var html2 = '';
         html2 += '<div>' + resultMatchText + '</div>'
@@ -74,8 +90,9 @@
         $('#winningOrLosing').append(html2);
 
 
+
         // ローカルストレージリセット処理
-        var dataReset = function() {
+        function dataReset() {
             var newData = [];
             $.each(players, function(i, data) {
                 var obj = {
@@ -88,10 +105,24 @@
 
             // ローカルストレージにセット
             localStorage.setItem("players", JSON.stringify(newData));
-        };
+        }
+
+        // 役職一覧描画処理
+        function cleateRoleList() {
+            var html3 = '';
+            $.each(players, function(i, data) {
+                html3 += '<div>' + data.name + 'さん→' + data.role + '</div>';
+            });
+            $('#roleList').append(html3);
+        }
 
         // 【一時的】dataReset();
         
+        // 次のセッションへボタンクリックイベント
+        $('#nextTurn').click(function() {
+            // 画面遷移
+            window.location.href = "./play.html";
+        });
         // 次のゲームへボタンクリックイベント
         $('#nextGame').click(function() {
             // 画面遷移

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <title>tohyoJinro</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../js/scene.js"></script>
+    </head>
+    <body>
+        <div class="page-title">■人狼を指名して処刑する</div>
+        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <select></select>
+        <button id="judge">処刑する</button><br>
+        <button id="linkAnswer">処刑をやめて投票する</button>
+    
+    </body>
+    <script type="text/javascript">
+        var players = JSON.parse(localStorage.getItem('players'));
+        var game = JSON.parse(localStorage.getItem('game'));
+        var html = '';
+        $.each(players, function(i, data) {
+            html += '<option value="' + i + '">' + data.name + '</option>';
+        });
+        $('select').append(html);
+
+        $('#judge').click(function() {
+            var num = $('select').val();
+            game.judge = num;
+            localStorage.setItem("game", JSON.stringify(game));
+            // 画面遷移
+            window.location.href = "./judgeResult.html";
+        });
+
+        // 回答画面遷移ボタンクリックイベント
+        $('#linkAnswer').click(function() {
+            // 画面遷移
+            window.location.href = "./answer.html";
+        });
+    </script>
+</html>
+
+

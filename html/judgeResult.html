@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <title>tohyoJinro</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../js/scene.js"></script>
+    </head>
+    <body>
+        <div class="page-title">■処刑結果</div>
+        <div>＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠</div>
+        <div id="before">
+            <div id="name"></div>>
+            <button id="next">結果へ</button>
+        </div>
+        <div id="after" style="display: none;">
+            <div id="winningOrLosing"></div>
+            <div id="roleList"></div>
+
+            <div id="nextGameLinkArea">
+                <button id="nextGame">次のゲームへ</button>
+                <button id="linkTop">TOPに戻る</button>
+            <div>
+        </div>
+                
+    </body>
+    <script type="text/javascript">
+        var players = JSON.parse(localStorage.getItem('players'));
+        var game = JSON.parse(localStorage.getItem('game'));
+
+        var target = players[game.judge];
+        $('#name').text('🔥🔥' + target.name + '🔥🔥');
+
+        // 勝者判定
+        var html = '';
+        if (target.role == '人狼') {
+            html += '人狼を処刑した。<br>村人チーム勝利';
+        } else {
+            html += '村人を処刑した。<br>人狼チーム勝利';
+        }
+        $('#winningOrLosing').append(html);
+        cleateRoleList();
+
+
+
+
+
+        // 役職一覧描画処理
+        function cleateRoleList() {
+            var html3 = '';
+            $.each(players, function(i, data) {
+                html3 += '<div>' + data.name + 'さん→' + data.role + '</div>';
+            });
+            $('#roleList').append(html3);
+        }
+
+        $('#next').click(function() {
+            $('#before').hide();
+            $('#after').show();
+        });
+    </script>
+</html>
+
+
