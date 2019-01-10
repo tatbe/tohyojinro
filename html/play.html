@@ -10,6 +10,7 @@
         <div class="page-title">■セッション</div>
         <div>みんなで協力して指定投票パターン通りに投票しよう！</div>
         <div>人狼はそれを阻止しよう！</div>
+        <div id="turn"></div>
         <div id="pattern"></div>
         <div id="startBtnArea">
             <button id="start">セッションスタート！</button>
@@ -28,7 +29,11 @@
     </body>
     <script type="text/javascript">
         var pattern = localStorage.getItem('pattern');
-        $('#pattern').append('指定投票パターン：' + pattern);
+        var turn = localStorage.getItem('turn');
+
+        $('#turn').append('投票できる回数：<b>あと' + turn + '回</b>');
+
+        $('#pattern').append('指定投票パターン：<b>' + pattern + '</b>');
         // セッションスタートボタンクリックイベント
         $('#start').click(function() {
             $('#session').show();

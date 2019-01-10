@@ -67,19 +67,19 @@
         }
         // 勝敗結果判定
         if (resultMatch) {
-            resultMatchText = '正解！ 村人チーム勝利！';
+            resultMatchText = '<b>正解！ 🎉村人チーム勝利！</b>';
             $('#nextTurnLinkArea').hide();
             $('#nextGameLinkArea').show();
             cleateRoleList();
             $('#roleList').show();
         } else if (!resultMatch && newTurn < 1) {
-            resultMatchText = '不正解 人狼チーム勝利';
+            resultMatchText = '<b>不正解 🎉人狼チーム勝利</b>';
             $('#nextTurnLinkArea').hide();
             $('#nextGameLinkArea').show();
             cleateRoleList();
             $('#roleList').show();
         } else {
-            resultMatchText = '不正解...';
+            resultMatchText = '<b>不正解...</b>';
             $('#nextTurn').text('次のセッションへ（あと' + newTurn + '回）');
             $('#nextTurnLinkArea').show();
             $('#nextGameLinkArea').hide();

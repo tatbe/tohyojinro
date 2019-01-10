@@ -33,9 +33,9 @@
         // 勝者判定
         var html = '';
         if (target.role == '人狼') {
-            html += '人狼を処刑した。<br>村人チーム勝利';
+            html += '人狼を処刑した。<br>🎉<b>村人チーム勝利！</b>';
         } else {
-            html += '村人を処刑した。<br>人狼チーム勝利';
+            html += '村人を処刑した。<br>🎉<b>人狼チーム勝利</b>';
         }
         $('#winningOrLosing').append(html);
         cleateRoleList();
@@ -48,14 +48,31 @@
         function cleateRoleList() {
             var html3 = '';
             $.each(players, function(i, data) {
-                html3 += '<div>' + data.name + 'さん→' + data.role + '</div>';
+                html3 += '<div>' + data.name + 'さん';
+                if (i == game.judge) {
+                    html3 += '💀';
+                }
+                html3 += '→' + data.role + '</div>';
             });
             $('#roleList').append(html3);
         }
 
+        // 結果へボタンクリックイベント
         $('#next').click(function() {
             $('#before').hide();
             $('#after').show();
+        });
+
+        // 次のゲームへボタンクリックイベント
+        $('#nextGame').click(function() {
+            // 画面遷移
+            window.location.href = "./setting.html";
+        });
+
+        // TOPへ戻るボタンクリックイベント
+        $('#linkTop').click(function() {
+            // 画面遷移
+            window.location.href = "./index.html";
         });
     </script>
 </html>
